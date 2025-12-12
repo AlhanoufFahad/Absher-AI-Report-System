@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ملخص البلاغ - أبشر</title>
+
+<link rel="stylesheet" href="/static/css/style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+
+.summary-box {
+    background: white;
+    border-radius: 12px;
+    padding: 22px;
+    box-shadow: 0 4px 15px rgba(0,0,0,.07);
+    border: 1px solid #eee;
+    margin-bottom: 30px;
+}
+
+.summary-row {
+    margin-bottom: 18px;
+    display: flex;
+    flex-direction: column;
+}
+
+.summary-label {
+    font-size: 15px;
+    color: #666;
+    margin-bottom: 6px;
+    font-weight: 500;
+}
+
+.summary-value {
+    font-size: 16px;
+    font-weight: 600;
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 12px 14px;
+    min-height: 46px;
+    display: flex;
+    align-items: center;
+    white-space: pre-line;
+}
+
+.summary-status {
+    background: #FF9800;
+    color: #fff;
+    font-weight: bold;
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-size: 14px;
+    display: inline-block;
+}
+
+.coordinates-display {
+    background: #E9F7EF;
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 6px;
+    color: #0B4F3A;
+    font-size: 14px;
+    display: none;
+}
+
+.summary-actions {
+    margin-top: 25px;
+    display: flex;
+    gap: 12px;
+}
+
+.btn-green {
+    flex: 1;
+    background: #0B4F3A;
+    color: white;
+    padding: 14px;
+    border-radius: 10px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-green:hover {
+    background: #08402e;
+}
+
+.btn-edit {
+    flex: 1;
+    background: #fff;
+    border: 2px solid #0B4F3A;
+    color: #0B4F3A;
+    padding: 14px;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-edit:hover {
+    background: #f3f3f3;
+}
+
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    color: white;
+    font-size: 18px;
+    flex-direction: column;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #0B4F3A;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+
+.image-preview-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.image-preview-summary {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #ddd;
+}
+
+.image-preview-summary img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.no-images {
+    color: #888;
+    font-style: italic;
+    text-align: center;
+    padding: 15px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    border: 1px dashed #ddd;
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .summary-actions {
+        flex-direction: column;
+    }
+    
+    .image-preview-summary {
+        width: 70px;
+        height: 70px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="simple-header">
+    <button class="back-btn" onclick="goBack()"><i class="fas fa-arrow-right"></i></button>
+    <h1 class="header-title">ملخص البلاغ</h1>
+</div>
+
+<div class="summary-box">
+
+    <div class="summary-row">
+        <span class="summary-label">رقم البلاغ:</span>
+        <div class="summary-value" id="reportNumber">سيتم إنشاؤه عند الإرسال</div>
+    </div>
+
+    <div class="summary-row">
+        <span class="summary-label">الحالة:</span>
+        <span class="summary-status" id="reportStatus">قيد المراجعة</span>
+    </div>
+
+    <div class="summary-row">
+        <span class="summary-label">نوع البلاغ:</span>
+        <div class="summary-value" id="reportTypeText">--</div>
+    </div>
+
+    <div class="summary-row">
+        <span class="summary-label">الجهة المختصة:</span>
+        <div class="summary-value" id="reportEntityText">--</div>
+    </div>
+
+    <div class="summary-row">
+        <span class="summary-label">وصف البلاغ:</span>
+        <div class="summary-value" id="reportDescriptionText">--</div>
+    </div>
+
+    <div class="summary-row">
+        <span class="summary-label">موقع الحادثة:</span>
+        <div class="summary-value" id="reportLocationText">--</div>
+    </div>
+
+    <div class="summary-row">
+        <span class="summary-label">الصور:</span>
+        <div id="reportImages" class="image-preview-container"></div>
+    </div>
+
+    <div class="summary-actions">
+        <button class="btn-edit" onclick="editReport()">تعديل</button>
+        <button class="btn-green" onclick="submitReport()">إرسال البلاغ</button>
+    </div>
+
+</div>
+
+
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
+    <p>جاري إرسال البلاغ...</p>
+</div>
+
+</div>
+
+<script>
+
+function goBack() { history.back(); }
+
+function editReport() { window.location.href = "/new-report"; }
+
+function showLoading() {
+    document.getElementById("loadingOverlay").style.display = 'flex';
+}
+
+function hideLoading() {
+    document.getElementById("loadingOverlay").style.display = 'none';
+}
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    const data = JSON.parse(localStorage.getItem("currentReport") || "{}");
+
+    document.getElementById("reportTypeText").textContent = data.type || "--";
+    document.getElementById("reportEntityText").textContent = data.entity || "--";
+    document.getElementById("reportLocationText").textContent = data.location || "--";
+    document.getElementById("reportDescriptionText").textContent = data.description || "--";
+
+    displayImages(data.images || []);
+});
+
+
+function displayImages(images) {
+    const container = document.getElementById("reportImages");
+
+    if (!images || images.length === 0) {
+        container.innerHTML = '<div class="no-images">لا توجد صور مرفوعة</div>';
+        return;
+    }
+
+    container.innerHTML = "";
+
+    images.forEach((src) => {
+        const imgDiv = document.createElement("div");
+        imgDiv.className = "image-preview-summary";
+        imgDiv.innerHTML = `<img src="${src}">`;
+        container.appendChild(imgDiv);
+    });
+}
+
+
+function submitReport() {
+
+    const data = JSON.parse(localStorage.getItem("currentReport") || "{}");
+
+    
+    console.log("Sending report:", data);
+
+    fetch("/api/save-report", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+        description: data.description,
+        type: data.type,
+        authority: data.entity,
+        location: data.location,
+        date: new Date().toLocaleDateString('ar-EG'),
+        time: new Date().toLocaleTimeString('ar-EG')
+    })
+})
+
+
+    .then(res => res.json())
+    .then(result => {
+        if (result.success) {
+            window.location.href = "/success";
+        } else {
+            alert("فشل حفظ البلاغ: " + result.error);
+        }
+    })
+    .catch(err => console.error(err));
+}
+
+
+function checkData() {
+    return JSON.parse(localStorage.getItem("currentReport") || "{}");
+}
+
+window.onload = () => {
+    checkData();
+};
+</script>
+
+</body>
+</html>
