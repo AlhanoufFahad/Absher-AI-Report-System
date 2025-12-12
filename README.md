@@ -1,6 +1,6 @@
 # Absher Smart Report System Project
 
-## Project Context
+## Project
 This project was developed under the **Innovation and Development of Absher Services Track** as part of the **Absher–Tuwaiq Hackathon 2025**, organized in collaboration with the **Saudi Ministry of Interior**.  
 The goal of the hackathon is to enhance and modernize digital services within the Absher platform through innovative, AI-powered solutions that improve efficiency, user experience, and security responsiveness.
 
