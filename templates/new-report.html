@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>إنشاء بلاغ جديد - أبشر</title>
+<link rel="stylesheet" href="/static/css/style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+
+.map-container {
+    width: 100%;
+    margin: 15px 0;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0,0,0,.15);
+    border: 2px solid #0B4F3A;
+    display: none;
+    position: relative;
+    background: white;
+    z-index: 1000;
+}
+.map-container.active {
+    display: block;
+    animation: slideDown .4s ease-out;
+}
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+#riyadhMap {
+    width: 100%;
+    height: 350px;
+    background: linear-gradient(135deg, #e6f3ff, #b3d9ff);
+    position: relative;
+    cursor: move;
+    overflow: hidden;
+}
+
+.map-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        linear-gradient(90deg, rgba(255,255,255,.1) 1px, transparent 1px) 0 0 / 20px 20px,
+        linear-gradient(rgba(255,255,255,.1) 1px, transparent 1px) 0 0 / 20px 20px,
+        radial-gradient(circle at 30% 30%, rgba(102,204,255,.2) 0%, transparent 50%),
+        radial-gradient(circle at 70% 70%, rgba(153,204,255,.2) 0%, transparent 50%),
+        linear-gradient(135deg, #b3d9ff, #66b3ff);
+}
+
+
+.custom-marker {
+    position: absolute;
+    transform: translate(-50%, -100%);
+    cursor: grab;
+    z-index: 10;
+    transition: transform 0.2s;
+}
+
+.custom-marker img {
+    width: 35px;
+    height: 35px;
+    filter: drop-shadow(0 3px 5px rgba(0,0,0,0.3));
+}
+
+.custom-marker.dragging {
+    cursor: grabbing;
+    transform: translate(-50%, -100%) scale(1.1);
+}
+
+
+.location-point {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: #FFC107;
+    border: 2px solid white;
+    border-radius: 50%;
+    cursor: pointer;
+    transform: translate(-50%, -50%);
+    z-index: 5;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+}
+
+.location-point:hover {
+    transform: translate(-50%, -50%) scale(1.3);
+    background: #FFC107;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+}
+
+
+.location-label {
+    position: absolute;
+    background: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #333;
+    white-space: nowrap;
+    transform: translate(-50%, 8px);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 4;
+    border: 1px solid #e0e0e0;
+}
+
+.location-point:hover .location-label {
+    opacity: 1;
+}
+
+.location-coordinates {
+    padding: 10px;
+    font-size: 14px;
+    background: #f9fff9;
+    border-radius: 8px;
+    margin: 10px;
+    text-align: center;
+    direction: ltr;
+    border: 1px solid #e0eae5;
+}
+
+.map-instruction {
+    text-align: center;
+    padding: 10px;
+    color: #666;
+    font-size: 14px;
+    background: #f9f9f9;
+    border-top: 1px solid #eee;
+}
+
+.image-upload-section {
+    width: 100%;
+    padding: 15px;
+    border: 2px dashed #0B4F3A;
+    text-align: center;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: .3s;
+    background: #f9fff9;
+}
+.image-upload-section:hover {
+    background: #e8f8ee;
+}
+
+.image-preview-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+.image-preview-item {
+    position: relative;
+    width: 90px;
+    height: 90px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+.image-preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.remove-image-btn {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    background: red;
+    color: white;
+    border: none;
+    font-size: 13px;
+    border-radius: 5px;
+    padding: 2px 6px;
+    cursor: pointer;
+}
+
+.next-button {
+    width: 100%;
+    padding: 12px;
+    background: #0B4F3A;
+    color: white;
+    border: none;
+    font-size: 17px;
+    border-radius: 10px;
+    margin-top: 18px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+.next-button:hover {
+    background: #08402e;
+}
+
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #333;
+}
+
+.required-star {
+    color: #d32f2f;
+    margin-left: 4px;
+}
+
+.form-input, .form-textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.form-input:focus, .form-textarea:focus {
+    outline: none;
+    border-color: #0B4F3A;
+    box-shadow: 0 0 0 2px rgba(11, 79, 58, 0.1);
+}
+
+.location-button {
+    width: 100%;
+    padding: 12px;
+    background: #f5f9f7;
+    border: 2px solid #0B4F3A;
+    border-radius: 8px;
+    color: #0B4F3A;
+    font-weight: bold;
+    margin-top: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.3s;
+}
+
+.location-button:hover {
+    background: #0B4F3A;
+    color: white;
+}
+
+.location-button i {
+    font-size: 18px;
+}
+
+
+.edit-entity-icon {
+    color: #0B4F3A;
+    cursor: pointer;
+    font-size: 16px;
+    margin-right: 8px;
+    opacity: 0.7;
+    transition: all 0.3s;
+    display: none; 
+}
+
+.edit-entity-icon:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.suggestion-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    border: 2px solid #e0eae5;
+    border-radius: 10px;
+    background: #f9fff9;
+    transition: all 0.3s ease;
+    min-height: 56px;
+}
+
+.suggestion-card.has-suggestion {
+    border-color: #0B4F3A;
+    background: #f0fff8;
+}
+
+.suggestion-text {
+    flex: 1;
+    padding: 0 8px;
+}
+
+.gray-text {
+    color: #888;
+    font-style: italic;
+}
+
+.entity-name {
+    color: #0B4F3A;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+
+.edit-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+}
+
+.edit-modal.active {
+    display: flex;
+    animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    background: white;
+    width: 90%;
+    max-width: 400px;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    animation: slideUp 0.3s;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-header {
+    background: #0B4F3A;
+    color: white;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background 0.3s;
+}
+
+.close-modal:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.modal-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+}
+
+.modal-input:focus {
+    outline: none;
+    border-color: #0B4F3A;
+    box-shadow: 0 0 0 2px rgba(11, 79, 58, 0.1);
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.modal-btn {
+    flex: 1;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+}
+
+.modal-btn-primary {
+    background: #0B4F3A;
+    color: white;
+}
+
+.modal-btn-primary:hover {
+    background: #08402e;
+}
+
+.modal-btn-secondary {
+    background: #f5f5f5;
+    color: #333;
+    border: 1px solid #ddd;
+}
+
+.modal-btn-secondary:hover {
+    background: #e9e9e9;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<div class="simple-header">
+<button class="back-btn" onclick="goBack()"><i class="fas fa-arrow-right"></i></button>
+<h1 class="header-title">إنشاء بلاغ جديد</h1>
+</div>
+
+<div class="report-form-container">
+<form id="reportForm">
+
+<div class="form-group">
+<label class="form-label"><span class="required-star">*</span> وصف البلاغ</label>
+<textarea id="reportDescription" class="form-textarea" placeholder="أكتب تفاصيل البلاغ..." rows="4" required></textarea>
+</div>
+
+<div class="form-group">
+<label class="form-label"><span class="required-star">*</span> نوع البلاغ</label>
+<div class="suggestion-card" id="typeSuggestion">
+<div class="suggestion-text gray-text">سيتم اقتراح نوع البلاغ تلقائيًا...</div>
+</div>
+</div>
+
+<div class="form-group">
+<label class="form-label"><span class="required-star">*</span> الجهة المختصة</label>
+<div class="suggestion-card" id="entitySuggestion">
+<div class="suggestion-text gray-text">سيتم اقتراح الجهة تلقائيًا...</div>
+
+</div>
+</div>
+
+
+
+<div class="form-group">
+<label class="form-label"><span class="required-star">*</span> موقع الحادثة</label>
+<input id="reportLocation" class="form-input" placeholder="اكتب الموقع أو حدده على الخريطة" required>
+
+<button type="button" class="location-button" onclick="toggleMap()">
+<i class="fas fa-map-marked-alt"></i> تحديد على الخريطة
+</button>
+
+<div class="map-container" id="mapContainer">
+<div id="riyadhMap">
+<div class="map-background"></div>
+
+<div id="mapMarker" class="custom-marker" style="top:50%;left:50%;">
+<img src="https://cdn-icons-png.flaticon.com/512/684/684908.png" alt="علامة الموقع">
+</div>
+</div>
+
+<div class="location-coordinates">
+<span id="coordinates">24.7136° N — 46.6753° E</span>
+</div>
+<div class="map-instruction">
+اسحب الدبوس الأحمر إلى موقع الحادثة
+</div>
+</div>
+</div>
+
+
+
+<div class="form-group">
+<label class="form-label"><span class="label-text">صور الحادثة (اختياري)</span></label>
+<div class="image-upload-section" onclick="triggerImageUpload()">
+<i class="fas fa-camera" style="font-size:30px;color:#0B4F3A"></i>
+<p>إضافة صورة</p>
+</div>
+
+<div id="imagePreview" class="image-preview-grid"></div>
+<input type="file" id="imageUpload" accept="image/*" multiple hidden onchange="handleImageUpload(event)">
+</div>
+
+<button type="button" class="next-button" onclick="validateAndProceed()">التالي <i class="fas fa-arrow-left"></i></button>
+
+</form>
+</div>
+
+
+<div class="edit-modal" id="editEntityModal">
+<div class="modal-content">
+<div class="modal-header">
+<h3>تعديل الجهة المختصة</h3>
+<button class="close-modal" onclick="closeEditModal()">×</button>
+</div>
+<div class="modal-body">
+<input type="text" id="entityInput" class="modal-input" placeholder="أكتب الجهة المختصة...">
+<div class="modal-actions">
+<button class="modal-btn modal-btn-secondary" onclick="closeEditModal()">إلغاء</button>
+<button class="modal-btn modal-btn-primary" onclick="saveEditedEntity()">حفظ</button>
+</div>
+</div>
+</div>
+</div>
+
+
+<nav class="bottom-nav">
+    <a href="/" class="nav-item">
+        <i class="fas fa-home"></i>
+        <span>الرئيسية</span>
+    </a>
+    <a href="/reports" class="nav-item active">
+        <i class="fas fa-file-alt"></i>
+        <span>بلاغي</span>
+    </a>
+    <a href="/family-record" class="nav-item">
+        <i class="fas fa-user-friends"></i>
+        <span>عائلتي</span>
+    </a>
+    <a href="/workers" class="nav-item">
+        <i class="fas fa-users"></i>
+        <span>عمالتي</span>
+    </a>
+    <a href="/more" class="nav-item">
+        <i class="fas fa-ellipsis-h"></i>
+        <span>المزيد</span>
+    </a>
+</nav>
+
+</div>
+
+<script>
+
+let selectedLocation = null;
+let isDragging = false;
+let startX, startY;
+let currentSuggestedEntity = "";
+
+
+const predefinedLocations = [
+    { name: "الصحافة", x: 70, y: 30, lat: 24.765, lng: 46.648 },
+    { name: "الياسمين", x: 40, y: 60, lat: 24.802, lng: 46.715 },
+    { name: "عرقة", x: 25, y: 45, lat: 24.758, lng: 46.683 },
+    { name: "الروضة", x: 60, y: 50, lat: 24.715, lng: 46.680 },
+    { name: "الملز", x: 50, y: 25, lat: 24.690, lng: 46.695 },
+    { name: "المرسلات", x: 45, y: 40, lat: 24.735, lng: 46.672 }
+];
+
+function goBack() {
+    history.back();
+}
+
+
+document.getElementById("reportDescription").addEventListener("input", async function() {
+    let text = this.value.trim();
+    
+    if (text.length < 3) {
+
+        showDefaults();
+        return;
+    }
+    
+    try {
+        
+        let response = await fetch("/predict", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({text: text})
+        });
+        
+        let result = await response.json();
+        
+        
+        if (result.label && result.authority) {
+            updateTypeSuggestion(result.label);
+            updateEntitySuggestion(result.authority);
+            
+            
+            saveToLocalStorage();
+        } else {
+            showDefaults();
+        }
+    } catch (error) {
+        console.log("❌ خطأ في الاتصال بالـ API:", error);
+        showDefaults();
+    }
+});
+
+function showDefaults() {
+    document.getElementById("typeSuggestion").innerHTML = '<div class="suggestion-text gray-text">سيتم اقتراح نوع البلاغ تلقائيًا...</div>';
+    document.getElementById("entitySuggestion").innerHTML = '<div class="suggestion-text gray-text">سيتم اقتراح الجهة تلقائيًا...</div>';
+    currentSuggestedEntity = "";
+}
+
+function updateTypeSuggestion(type) {
+    const typeCard = document.getElementById("typeSuggestion");
+    typeCard.innerHTML = `<div class="suggestion-text"><b>${type}</b></div>`;
+}
+
+function updateEntitySuggestion(entity) {
+    const entityCard = document.getElementById("entitySuggestion");
+    currentSuggestedEntity = entity;
+    
+    
+    entityCard.innerHTML = `
+        <div class="suggestion-text"><b>${entity}</b></div>
+        <i class="fas fa-pen edit-entity-icon" onclick="openEditModal()"></i>
+    `;
+    
+    
+    entityCard.classList.add("has-suggestion");
+    
+
+    const editIcon = entityCard.querySelector('.edit-entity-icon');
+    editIcon.style.display = "block";
+}
+
+function saveToLocalStorage() {
+    let data = {
+        description: document.getElementById("reportDescription").value,
+        type: document.querySelector('#typeSuggestion .suggestion-text b')?.textContent || "",
+        entity: currentSuggestedEntity || "",
+        location: document.getElementById("reportLocation").value,
+        coordinates: document.getElementById("coordinates")?.innerText || "",
+        selectedLocation: selectedLocation  
+    };
+    localStorage.setItem("currentReport", JSON.stringify(data));
+}
+
+function openEditModal() {
+    const modal = document.getElementById("editEntityModal");
+    const input = document.getElementById("entityInput");
+    
+    
+    input.value = currentSuggestedEntity;
+    
+    
+    modal.classList.add("active");
+    
+    
+    setTimeout(() => {
+        input.focus();
+        input.select();
+    }, 100);
+}
+
+function closeEditModal() {
+    document.getElementById("editEntityModal").classList.remove("active");
+}
+
+function saveEditedEntity() {
+    const input = document.getElementById("entityInput");
+    const newEntity = input.value.trim();
+    
+    if (newEntity) {
+        
+        const entityCard = document.getElementById("entitySuggestion");
+        entityCard.innerHTML = `
+            <div class="suggestion-text"><b>${newEntity}</b></div>
+            <i class="fas fa-pen edit-entity-icon" onclick="openEditModal()"></i>
+        `;
+        
+        
+        currentSuggestedEntity = newEntity;
+        
+        
+        saveToLocalStorage();
+        
+        
+        closeEditModal();
+    } else {
+        alert("الرجاء كتابة اسم الجهة المختصة");
+    }
+}
+
+
+function toggleMap() {
+    const mapContainer = document.getElementById("mapContainer");
+    mapContainer.classList.toggle("active");
+    
+    if (mapContainer.classList.contains("active")) {
+        initMap();
+    }
+}
+
+function initMap() {
+    const map = document.getElementById("riyadhMap");
+    const marker = document.getElementById("mapMarker");
+    
+    
+    const existingPoints = map.querySelectorAll('.location-point');
+    existingPoints.forEach(point => point.remove());
+    
+    
+    predefinedLocations.forEach(loc => {
+        const point = document.createElement('div');
+        point.className = 'location-point';
+        point.dataset.name = loc.name;
+        point.style.left = `${loc.x}%`;
+        point.style.top = `${loc.y}%`;
+        
+        
+        const label = document.createElement('div');
+        label.className = 'location-label';
+        label.textContent = loc.name;
+        point.appendChild(label);
+        
+        
+        point.addEventListener('click', function(e) {
+            e.stopPropagation();
+            
+            
+            marker.style.left = `${loc.x}%`;
+            marker.style.top = `${loc.y}%`;
+            
+            
+            updateCoordinates(loc.x, loc.y);
+            
+            
+            updateLocationField(loc.name, loc.lat, loc.lng);
+            
+            
+            marker.classList.add('dragging');
+            setTimeout(() => {
+                marker.classList.remove('dragging');
+            }, 200);
+        });
+        
+        map.appendChild(point);
+    });
+    
+    
+    enableMarkerDragging();
+    
+    
+    if (selectedLocation) {
+        marker.style.left = selectedLocation.x + '%';
+        marker.style.top = selectedLocation.y + '%';
+        updateCoordinates(selectedLocation.x, selectedLocation.y);
+    }
+}
+
+function enableMarkerDragging() {
+    const map = document.getElementById("riyadhMap");
+    const marker = document.getElementById("mapMarker");
+    
+
+    marker.onmousedown = startDrag;
+    marker.ontouchstart = startDrag;
+    
+    function startDrag(e) {
+        e.preventDefault();
+        isDragging = true;
+        marker.classList.add('dragging');
+        
+        const rect = map.getBoundingClientRect();
+        if (e.type === 'mousedown') {
+            startX = e.clientX - rect.left;
+            startY = e.clientY - rect.top;
+        } else {
+            startX = e.touches[0].clientX - rect.left;
+            startY = e.touches[0].clientY - rect.top;
+        }
+        
+        document.onmousemove = drag;
+        document.ontouchmove = drag;
+        document.onmouseup = stopDrag;
+        document.ontouchend = stopDrag;
+    }
+    
+    function drag(e) {
+        if (!isDragging) return;
+        
+        const rect = map.getBoundingClientRect();
+        let x, y;
+        
+        if (e.type === 'mousemove') {
+            x = e.clientX - rect.left;
+            y = e.clientY - rect.top;
+        } else {
+            x = e.touches[0].clientX - rect.left;
+            y = e.touches[0].clientY - rect.top;
+        }
+        
+
+        x = Math.max(10, Math.min(rect.width - 10, x));
+        y = Math.max(10, Math.min(rect.height - 10, y));
+        
+        marker.style.left = (x / rect.width * 100) + "%";
+        marker.style.top = (y / rect.height * 100) + "%";
+        
+        updateCoordinates(x / rect.width * 100, y / rect.height * 100);
+    }
+    
+    function stopDrag() {
+        isDragging = false;
+        marker.classList.remove('dragging');
+        
+        document.onmousemove = null;
+        document.ontouchmove = null;
+        document.onmouseup = null;
+        document.ontouchend = null;
+        
+
+        const markerRect = marker.getBoundingClientRect();
+        const mapRect = map.getBoundingClientRect();
+        
+        const markerX = (markerRect.left + markerRect.width/2 - mapRect.left) / mapRect.width * 100;
+        const markerY = (markerRect.top + markerRect.height/2 - mapRect.top) / mapRect.height * 100;
+        
+        findClosestLocation(markerX, markerY);
+    }
+}
+
+function updateCoordinates(xPercent, yPercent) {
+
+    const lat = 24.7136 + (yPercent - 50) / 5000;
+    const lng = 46.6753 + (xPercent - 50) / 5000;
+    
+    document.getElementById("coordinates").textContent = `${lat.toFixed(4)}° N — ${lng.toFixed(4)}° E`;
+}
+
+function findClosestLocation(xPercent, yPercent) {
+    let closestLocation = null;
+    let minDistance = Infinity;
+    
+    predefinedLocations.forEach(loc => {
+        const distance = Math.sqrt(
+            Math.pow(xPercent - loc.x, 2) + 
+            Math.pow(yPercent - loc.y, 2)
+        );
+        
+        if (distance < minDistance) {
+            minDistance = distance;
+            closestLocation = loc;
+        }
+    });
+    
+    
+    if (closestLocation && minDistance < 15) {
+        updateLocationField(closestLocation.name, closestLocation.lat, closestLocation.lng);
+    } else {
+        
+        updateLocationField("موقع غير معروف", 
+            24.7136 + (yPercent - 50) / 5000, 
+            46.6753 + (xPercent - 50) / 5000);
+    }
+}
+
+function updateLocationField(locationName, lat, lng) {
+
+    document.getElementById("reportLocation").value = locationName;
+    
+    
+    selectedLocation = {
+        name: locationName,
+        lat: lat,
+        lng: lng,
+        x: parseFloat(document.getElementById("mapMarker").style.left),
+        y: parseFloat(document.getElementById("mapMarker").style.top)
+    };
+    
+    
+    saveToLocalStorage();
+}
+
+function triggerImageUpload() {
+    document.getElementById("imageUpload").click();
+}
+
+function handleImageUpload(e) {
+    const preview = document.getElementById("imagePreview");
+    const files = Array.from(e.target.files);
+    
+    files.forEach(file => {
+        if (file.size > 5 * 1024 * 1024) {
+            alert("حجم الصورة يجب أن يكون أقل من 5 ميجابايت");
+            return;
+        }
+        
+        if (!file.type.startsWith('image/')) {
+            alert("الرجاء اختيار صورة فقط");
+            return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            const box = document.createElement("div");
+            box.className = "image-preview-item";
+            box.innerHTML = `
+                <img src="${ev.target.result}" alt="صورة البلاغ">
+                <button class="remove-image-btn" onclick="this.parentElement.remove()">✕</button>
+            `;
+            preview.appendChild(box);
+        };
+        reader.readAsDataURL(file);
+    });
+    
+    e.target.value = '';
+}
+
+function validateAndProceed() {
+    const reportDescription = document.getElementById("reportDescription");
+    const reportLocation = document.getElementById("reportLocation");
+    
+    if (!reportDescription.value.trim()) {
+        alert("الرجاء إدخال وصف البلاغ");
+        reportDescription.focus();
+        return;
+    }
+    
+    if (!reportLocation.value.trim()) {
+        alert("الرجاء تحديد موقع الحادثة");
+        reportLocation.focus();
+        return;
+    }
+    
+    
+    const entityText = document.querySelector('#entitySuggestion .suggestion-text b');
+    if (!entityText || entityText.textContent.includes("سيتم اقتراح")) {
+        alert("الرجاء انتظار اقتراح الجهة المختصة");
+        return;
+    }
+    
+    
+    saveToLocalStorage();
+    
+    window.location.href = "/summary";
+}
+
+document.getElementById("editEntityModal").addEventListener("click", function(e) {
+    if (e.target === this) {
+        closeEditModal();
+    }
+});
+
+
+document.getElementById("reportLocation").addEventListener("click", function() {
+    if (!this.value.trim()) {
+        toggleMap();
+    }
+});
+
+
+window.addEventListener('load', function() {
+    const savedData = JSON.parse(localStorage.getItem("currentReport") || "{}");
+    
+    if (savedData.description) {
+        document.getElementById("reportDescription").value = savedData.description;
+    }
+    
+    if (savedData.location) {
+        document.getElementById("reportLocation").value = savedData.location;
+        selectedLocation = savedData.selectedLocation;
+    }
+    
+    if (savedData.type) {
+        document.getElementById("typeSuggestion").innerHTML = `<div class="suggestion-text"><b>${savedData.type}</b></div>`;
+    }
+    
+    if (savedData.entity) {
+        currentSuggestedEntity = savedData.entity;
+        document.getElementById("entitySuggestion").innerHTML = `
+            <div class="suggestion-text"><b>${savedData.entity}</b></div>
+            <i class="fas fa-pen edit-entity-icon" onclick="openEditModal()"></i>
+        `;
+        document.getElementById("entitySuggestion").classList.add("has-suggestion");
+        document.querySelector('#entitySuggestion .edit-entity-icon').style.display = "block";
+    }
+});
+</script>
+
+</body>
+</html>
+
+
