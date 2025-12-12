@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - الرئيسية</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        
+        <div class="sidebar">
+            <div class="logo-area">
+                <div class="logo">لوحة التحكم</div>
+            </div>
+            <div class="menu">
+                <a href="index.html" class="menu-btn active">
+                    الرئيسية
+                </a>
+                <a href="reports.html" class="menu-btn">
+                    البلاغات
+                </a>
+            </div>
+        </div>
+
+        
+        <div class="main-content">
+            
+            <div class="page-content">
+                <header class="page-header">
+                    <h1>لوحة الإحصائيات</h1>
+                    <div>
+                        <button class="add-report-btn" onclick="refreshAllStats()">
+                            <i class="fas fa-sync-alt"></i> تحديث الإحصائيات
+                        </button>
+                    </div>
+                </header>
+
+                
+                <div class="stats-section">
+                    <div class="stat-card" id="total-reports-card">
+                        <div class="stat-header">
+                            <div class="stat-title">إجمالي البلاغات</div>
+                            <div class="stat-icon">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="total-reports">1,248</div>
+                        <div class="stat-change" id="total-change">
+                            <i class="fas fa-arrow-up"></i> <span id="total-percent">12%</span> عن الشهر الماضي
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="total-progress" style="width: 62%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card" id="completed-reports-card">
+                        <div class="stat-header">
+                            <div class="stat-title">البلاغات المكتملة</div>
+                            <div class="stat-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="completed-reports">892</div>
+                        <div class="stat-change" id="completed-change">
+                            <i class="fas fa-arrow-up"></i> <span id="completed-percent">8%</span> عن الشهر الماضي
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="completed-progress" style="width: 72%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card" id="avg-response-card">
+                        <div class="stat-header">
+                            <div class="stat-title">متوسط وقت الاستجابة</div>
+                            <div class="stat-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="avg-response">4.2 ساعة</div>
+                        <div class="stat-change negative" id="response-change">
+                            <i class="fas fa-arrow-down"></i> <span id="response-percent">15%</span> عن الشهر الماضي
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="response-progress" style="width: 58%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card" id="satisfaction-card">
+                        <div class="stat-header">
+                            <div class="stat-title">معدل الرضا</div>
+                            <div class="stat-icon">
+                                <i class="fas fa-smile"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="satisfaction-rate">94%</div>
+                        <div class="stat-change" id="satisfaction-change">
+                            <i class="fas fa-arrow-up"></i> <span id="satisfaction-percent">3%</span> عن الشهر الماضي
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="satisfaction-progress" style="width: 94%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div class="charts-section">
+                    <div class="chart-card">
+                        <div class="chart-title">
+                            البلاغات حسب النوع
+                            <button class="chart-refresh" onclick="refreshTypeChart()">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="typeChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-card">
+                        <div class="chart-title">
+                            البلاغات حسب الحالة
+                            <button class="chart-refresh" onclick="refreshStatusChart()">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="statusChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                
+                <div class="charts-section">
+                    <div class="chart-card">
+                        <div class="chart-title">
+                            البلاغات حسب الجهة المختصة
+                            <button class="chart-refresh" onclick="refreshAuthorityChart()">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="authorityChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-card">
+                        <div class="chart-title">
+                            البلاغات حسب الخطورة
+                            <button class="chart-refresh" onclick="refreshDangerChart()">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="dangerChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        
+        const statsData = {
+            types: {
+                labels: ['حريق', 'حادث', 'شكوى', 'بلاغ'],
+                data: [45, 30, 15, 10],
+                colors: ['#D9534F', '#F0AD4E', '#5BC0DE', '#5CB85C']
+            },
+            statuses: {
+                labels: ['تم التنفيذ', 'قيد التنفيذ', 'تم الإلغاء'],
+                data: [892, 300, 56],
+                colors: ['#28A745', '#17a2b8', '#6c757d']
+            },
+            authorities: {
+                labels: ['البلدية', 'المرور', 'الدفاع المدني', 'الصحة'],
+                data: [520, 400, 200, 128],
+                colors: ['#1D794F', '#0B4F3A', '#28a745', '#5CB85C']
+            },
+            dangers: {
+                labels: ['عالية', 'متوسطة', 'منخفضة'],
+                data: [312, 520, 416],
+                colors: ['#D9534F', '#F0AD4E', '#5CB85C']
+            }
+        };
+
+        
+        let typeChart, statusChart, authorityChart, dangerChart;
+        
+        
+        function createCharts() {
+            
+            if (typeChart) typeChart.destroy();
+            if (statusChart) statusChart.destroy();
+            if (authorityChart) authorityChart.destroy();
+            if (dangerChart) dangerChart.destroy();
+            
+            
+            createTypeChart();
+            createStatusChart();
+            createAuthorityChart();
+            createDangerChart();
+        }
+        
+        function createTypeChart() {
+            const ctx = document.getElementById('typeChart').getContext('2d');
+            typeChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: statsData.types.labels,
+                    datasets: [{
+                        data: statsData.types.data,
+                        backgroundColor: statsData.types.colors,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            rtl: true,
+                            labels: {
+                                font: {
+                                    family: 'Tajawal'
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        function createStatusChart() {
+            const ctx = document.getElementById('statusChart').getContext('2d');
+            statusChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: statsData.statuses.labels,
+                    datasets: [{
+                        label: 'عدد البلاغات',
+                        data: statsData.statuses.data,
+                        backgroundColor: statsData.statuses.colors,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                font: {
+                                    family: 'Tajawal'
+                                }
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                font: {
+                                    family: 'Tajawal'
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+        
+        function createAuthorityChart() {
+            const ctx = document.getElementById('authorityChart').getContext('2d');
+            authorityChart = new Chart(ctx, {
+                type: 'polarArea',
+                data: {
+                    labels: statsData.authorities.labels,
+                    datasets: [{
+                        data: statsData.authorities.data,
+                        backgroundColor: statsData.authorities.colors,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            rtl: true,
+                            labels: {
+                                font: {
+                                    family: 'Tajawal'
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        function createDangerChart() {
+            const ctx = document.getElementById('dangerChart').getContext('2d');
+            dangerChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: statsData.dangers.labels,
+                    datasets: [{
+                        data: statsData.dangers.data,
+                        backgroundColor: statsData.dangers.colors,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            rtl: true,
+                            labels: {
+                                font: {
+                                    family: 'Tajawal'
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        
+        function refreshTypeChart() {
+            
+            statsData.types.data = statsData.types.data.map(value => 
+                Math.max(5, value + Math.floor(Math.random() * 10) - 5)
+            );
+            
+            typeChart.data.datasets[0].data = statsData.types.data;
+            typeChart.update();
+            
+            
+            const btn = event.target.closest('button');
+            btn.style.transform = 'rotate(360deg)';
+            setTimeout(() => {
+                btn.style.transform = '';
+            }, 300);
+        }
+        
+        function refreshStatusChart() {
+            statsData.statuses.data = statsData.statuses.data.map(value => 
+                Math.max(10, value + Math.floor(Math.random() * 20) - 10)
+            );
+            
+            statusChart.data.datasets[0].data = statsData.statuses.data;
+            statusChart.update();
+        }
+        
+        function refreshAuthorityChart() {
+            statsData.authorities.data = statsData.authorities.data.map(value => 
+                Math.max(20, value + Math.floor(Math.random() * 30) - 15)
+            );
+            
+            authorityChart.data.datasets[0].data = statsData.authorities.data;
+            authorityChart.update();
+        }
+        
+        function refreshDangerChart() {
+            statsData.dangers.data = statsData.dangers.data.map(value => 
+                Math.max(20, value + Math.floor(Math.random() * 25) - 12)
+            );
+            
+            dangerChart.data.datasets[0].data = statsData.dangers.data;
+            dangerChart.update();
+        }
+        
+        
+        function refreshAllStats() {
+            
+            const totalElement = document.getElementById('total-reports');
+            const completedElement = document.getElementById('completed-reports');
+            const responseElement = document.getElementById('avg-response');
+            const satisfactionElement = document.getElementById('satisfaction-rate');
+            
+            
+            const newTotal = Math.max(1000, parseInt(totalElement.textContent.replace(',', '')) + Math.floor(Math.random() * 50) - 20);
+            const newCompleted = Math.max(800, parseInt(completedElement.textContent.replace(',', '')) + Math.floor(Math.random() * 40) - 15);
+            const newResponse = Math.max(3, parseFloat(responseElement.textContent) + (Math.random() * 0.5 - 0.25)).toFixed(1);
+            const newSatisfaction = Math.max(85, parseInt(satisfactionElement.textContent) + Math.floor(Math.random() * 5) - 2);
+            
+            
+            animateValue(totalElement, newTotal.toLocaleString());
+            animateValue(completedElement, newCompleted.toLocaleString());
+            animateValue(responseElement, newResponse + ' ساعة');
+            animateValue(satisfactionElement, newSatisfaction + '%');
+            
+            
+            updatePercentages(newTotal, newCompleted, newResponse, newSatisfaction);
+            
+            
+            refreshTypeChart();
+            refreshStatusChart();
+            refreshAuthorityChart();
+            refreshDangerChart();
+            
+            
+            const refreshBtn = document.querySelector('.add-report-btn');
+            const originalText = refreshBtn.innerHTML;
+            refreshBtn.innerHTML = '<i class="fas fa-check"></i> تم التحديث';
+            refreshBtn.style.backgroundColor = '#28A745';
+            
+            setTimeout(() => {
+                refreshBtn.innerHTML = originalText;
+                refreshBtn.style.backgroundColor = '#1D794F';
+            }, 1500);
+        }
+        
+        
+        function animateValue(element, newValue) {
+            const currentValue = element.textContent;
+            element.classList.add('changing');
+            
+            setTimeout(() => {
+                element.textContent = newValue;
+                element.classList.remove('changing');
+            }, 500);
+        }
+        
+        
+        function updatePercentages(total, completed, response, satisfaction) {
+            
+            const lastMonth = {
+                total: 1100,
+                completed: 800,
+                response: 4.8,
+                satisfaction: 91
+            };
+            
+            
+            const totalPercent = Math.round(((total - lastMonth.total) / lastMonth.total) * 100);
+            const completedPercent = Math.round(((completed - lastMonth.completed) / lastMonth.completed) * 100);
+            const responsePercent = Math.round(((lastMonth.response - response) / lastMonth.response) * 100);
+            const satisfactionPercent = Math.round(((satisfaction - lastMonth.satisfaction) / lastMonth.satisfaction) * 100);
+            
+            
+            document.getElementById('total-percent').textContent = Math.abs(totalPercent) + '%';
+            document.getElementById('completed-percent').textContent = Math.abs(completedPercent) + '%';
+            document.getElementById('response-percent').textContent = Math.abs(responsePercent) + '%';
+            document.getElementById('satisfaction-percent').textContent = Math.abs(satisfactionPercent) + '%';
+            
+            
+            updateArrow('total-change', totalPercent);
+            updateArrow('completed-change', completedPercent);
+            updateArrow('response-change', responsePercent);
+            updateArrow('satisfaction-change', satisfactionPercent);
+        }
+        
+        
+        function updateArrow(elementId, percent) {
+            const element = document.getElementById(elementId);
+            const icon = element.querySelector('i');
+            
+            if (percent >= 0) {
+                icon.className = 'fas fa-arrow-up';
+                element.classList.remove('negative');
+            } else {
+                icon.className = 'fas fa-arrow-down';
+                element.classList.add('negative');
+            }
+        }
+        
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            createCharts();
+        });
+    </script>
+</body>
+</html>
