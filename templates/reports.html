@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بلاغي - أبشر</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body class="reports-page">
+    <div class="container">
+
+<header class="header">
+    <div style="width: 44px;">
+        <i class="fas fa-arrow-right back-icon" onclick="goBack()"></i>
+    </div>
+
+    <span style="flex:1;text-align:center;font-weight:bold;font-size:1.5rem;">
+        بلاغي
+    </span>
+
+    <div class="icons-frame">
+        <div class="icon-item" onclick="goTo('/settings')">
+            <i class="fas fa-cog"></i>
+        </div>
+        <div class="icon-item notification-icon" onclick="goTo('/notifications')">
+            <i class="fas fa-bell"></i>
+            <span class="notification-badge">2</span>
+        </div>
+    </div>
+</header>
+
+<div class="search-input">
+    <i class="fas fa-search"></i>
+    <input type="text" placeholder="ابحث برقم البلاغ">
+</div>
+
+
+<div class="reports-container">
+
+    {% if reports %}
+        {% for r in reports %}
+
+        <div class="report-item">
+
+            <div class="report-header" style="display:flex; justify-content:space-between; align-items:center;">
+
+    
+    <span class="report-number" style="font-weight:bold; font-size:14px;">
+        #{{ r.id }}/2025
+    </span>
+
+    
+    <span class="report-date" style="color:#777; font-size:13px; display:flex; align-items:center; gap:6px;">
+        <i class="far fa-clock"></i>{{ r.date }}
+    </span>
+
+</div>
+
+
+            <div class="report-title">{{ r.type or " — " }}</div>
+
+
+            <p class="report-description">
+            {{ r.description or "لا يوجد وصف" }}
+            </p>
+
+            <div class="report-footer">
+
+                {% if r.status == "completed" %}
+                    <span class="report-status status-completed">تم التنفيذ</span>
+
+                {% elif r.status == "cancelled" %}
+                    <span class="report-status status-cancelled">إلغاء البلاغ</span>
+
+                {% else %}
+                    <span class="report-status status-pending">قيد المراجعة</span>
+                {% endif %}
+
+                <button class="details-btn" disabled>
+                    <span>عرض التفاصيل</span>
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+    {% else %}
+        <p style="text-align:center;color:#777;margin-top:40px;">
+            لا يوجد بلاغات حتى الآن
+        </p>
+    {% endif %}
+
+</div>
+
+
+<button class="new-report-fab" onclick="goTo('/new-report')" title="إنشاء بلاغ جديد">
+    <i class="fas fa-plus"></i>
+</button>
+
+
+<nav class="bottom-nav">
+    <a href="/" class="nav-item">
+        <i class="fas fa-home"></i>
+        <span>الرئيسية</span>
+    </a>
+    <a href="/reports" class="nav-item active">
+        <i class="fas fa-file-alt"></i>
+        <span>بلاغي</span>
+    </a>
+    <a href="/family-record" class="nav-item">
+        <i class="fas fa-user-friends"></i>
+        <span>عائلتي</span>
+    </a>
+    <a href="/workers" class="nav-item">
+        <i class="fas fa-users"></i>
+        <span>عمالتي</span>
+    </a>
+    <a href="/more" class="nav-item">
+        <i class="fas fa-ellipsis-h"></i>
+        <span>المزيد</span>
+    </a>
+</nav>
+
+</div>
+
+<script>
+function goTo(path){ window.location.href = path; }
+function goBack(){ window.history.back(); }
+</script>
+
+</body>
+</html>
