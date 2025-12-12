@@ -1,4 +1,4 @@
-# Absher Smart Report Classifier
+# Absher Smart Report System Project
 
 ## Project Context
 This project was developed under the **Innovation and Development of Absher Services Track** as part of the **Absher–Tuwaiq Hackathon 2025**, organized in collaboration with the **Saudi Ministry of Interior**.  
