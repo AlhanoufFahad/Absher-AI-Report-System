@@ -38,13 +38,6 @@ Fully extracted files and folders uploaded directly to the repository for easy n
 - `reports.db`
 - Additional supporting modules
 
-### Original ZIP File
-The repository also includes the original archive:
-
-## Absher-Project_Last_Update_Codes.zip
-
-This ZIP contains the complete project before extraction and is preserved for backup and portability.
-
 ---
 
 ## Features
@@ -79,11 +72,9 @@ python app.py
 ```
 
 ## Database Details
-- The project uses a local SQLite database:
+- The project uses a local SQLite database: ```reports.db```
 
-```reports.db```
-
-Stored fields include:
+### Stored fields include:
 - Report ID
 - Description
 - Predicted Type
