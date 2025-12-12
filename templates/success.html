@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تم الإرسال بنجاح - أبشر</title>
+<link rel="stylesheet" href="/static/css/style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+
+.success-page{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:80vh;text-align:center;padding:20px}
+
+.success-icon{width:100px;height:100px;background:linear-gradient(135deg,#4CAF50,#2E7D32);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:25px;box-shadow:0 10px 25px rgba(76,175,80,.3);animation:bounce 1s}
+
+.success-icon i{font-size:50px;color:white}
+.success-title{color:#2E7D32;font-size:28px;margin-bottom:10px;font-weight:700}
+.success-page p{color:#666;font-size:16px;margin-bottom:20px}
+
+.report-id{background:#FFF;border:2px solid #4CAF50;border-radius:15px;padding:15px 25px;margin:25px 0;font-size:18px;font-weight:700;color:#1B5E20;display:flex;align-items:center;gap:10px;box-shadow:0 5px 15px rgba(76,175,80,.1)}
+
+.success-message{background:#F8F9FA;padding:18px;border-radius:15px;border-right:5px solid #4CAF50;max-width:480px;margin:auto;font-size:15px;line-height:1.7}
+
+
+.action-buttons{display:flex;gap:15px;flex-wrap:wrap;justify-content:center;margin-top:25px}
+.reports-btn,.home-btn{padding:14px 28px;font-size:16px;font-weight:600;border-radius:25px;display:flex;align-items:center;gap:10px;transition:.3s;text-decoration:none}
+
+.reports-btn{background:#FFF;border:2px solid #2E7D32;color:#2E7D32}
+.reports-btn:hover{background:#E8F5E9;transform:translateY(-2px)}
+
+.home-btn{background:linear-gradient(135deg,#0B4F3A,#1D794F);color:white;box-shadow:0 5px 15px rgba(11,79,58,.2)}
+.home-btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(11,79,58,.3)}
+
+@keyframes bounce{
+0%{transform:scale(.7);opacity:0}
+50%{transform:scale(1.08)}
+100%{transform:scale(1);opacity:1}
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<div class="success-page">
+
+<div class="success-icon"><i class="fas fa-check"></i></div>
+
+<h1 class="success-title">تم إرسال البلاغ بنجاح</h1>
+<p>إلى الجهة المختصة</p>
+
+<div class="report-id" id="reportNumber">
+<i class="fas fa-file-alt"></i>
+<span>رقم البلاغ: ...</span>
+</div>
+
+<div class="success-message">
+تم استلام بلاغك وسيتم التعامل معه في أسرع وقت ممكن.<br>
+يمكنك متابعة حالة البلاغ من صفحة بلاغي.
+</div>
+
+<div class="action-buttons">
+<a href="/reports" class="reports-btn"><i class="fas fa-file-alt"></i> الذهاب إلى بلاغي</a>
+<a href="/" class="home-btn"><i class="fas fa-home"></i> الرئيسية</a>
+</div>
+
+</div>
+</div>
+
+<script>
+
+document.addEventListener("DOMContentLoaded",()=>{
+let number = localStorage.getItem("lastReportNumber") || generateReportNumber();
+document.getElementById("reportNumber").innerHTML = `
+<i class="fas fa-file-alt"></i> <span>رقم البلاغ: ${number}</span>
+`;
+});
+
+
+function generateReportNumber(){
+const y=new Date().getFullYear().toString().slice(-2);
+const m=(new Date().getMonth()+1).toString().padStart(2,"0");
+const n=Math.floor(Math.random()*900)+100;
+return `REP-${y}${m}${n}`;
+}
+</script>
+
+
+
+<script>
+
+function goBack() {
+    history.back();
+}
+
+
+async function saveToDatabase(reportData) {
+    try {
+        console.log(" جاري حفظ البلاغ في قاعدة البيانات...");
+        
+        const response = await fetch('/api/save-report', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(reportData)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            console.log(` تم حفظ البلاغ في قاعدة البيانات! رقم: ${result.report_id}`);
+            
+            
+            const dbInfo = document.createElement('div');
+            dbInfo.style.cssText = 'font-size: 12px; color: #666; margin-top: 10px; background: #f5f5f5; padding: 5px; border-radius: 5px;';
+            dbInfo.innerHTML = `رقم قاعدة البيانات: <strong>${result.report_id}</strong>`;
+            document.querySelector('.success-container').appendChild(dbInfo);
+            
+            return result.report_id;
+        } else {
+            console.error(" فشل في حفظ البلاغ:", result.error);
+            return null;
+        }
+        
+    } catch (error) {
+        console.error(" خطأ في الحفظ:", error);
+        return null;
+    }
+}
+
+document.addEventListener("DOMContentLoaded", async function() {
+    try {
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const displayReportId = urlParams.get('report_id') || 'N/A';
+        
+        
+        document.getElementById('reportIdDisplay').textContent = `رقم البلاغ: ${displayReportId}`;
+        
+        
+        const reportData = JSON.parse(localStorage.getItem("reportToSave") || "{}");
+        
+        
+        if (reportData && reportData.description) {
+            console.log(" بيانات البلاغ للحفظ:", reportData);
+            
+            
+            const dbId = await saveToDatabase(reportData);
+            
+            
+            localStorage.removeItem("reportToSave");
+            
+        } else {
+            console.log(" لا توجد بيانات لحفظها في قاعدة البيانات");
+        }
+        
+    } catch (error) {
+        console.error(" خطأ في صفحة النجاح:", error);
+        document.getElementById('reportIdDisplay').textContent = "رقم البلاغ: N/A";
+    }
+});
+</script>
+
+</body>
+</html>
