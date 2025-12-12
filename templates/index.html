@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>خدماتي - أبشر</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+
+        
+        <header class="header">
+            <div class="logo">
+                <span>خدماتي</span>
+            </div>
+            
+            <div class="icons-frame">
+                <div class="icon-item" onclick="goTo('/settings')">
+                    <i class="fas fa-cog"></i>
+                </div>
+                
+                <div class="icon-item notification-icon" onclick="goTo('/notifications')">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                </div>
+            </div>
+        </header>
+
+        
+        <div class="search-input">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="ابحث باسم الخدمة">
+        </div>
+
+        
+        <div class="services-grid">
+
+            
+            <div class="service-card" onclick="goTo('/reports')">
+                <div class="service-icon"><i class="fas fa-id-card"></i></div>
+                <div class="service-content"><div class="service-title">خدمات الهوية الوطنية</div></div>
+            </div>
+
+            <div class="service-card" onclick="goTo('/passport')">
+                <div class="service-icon"><i class="fas fa-passport"></i></div>
+                <div class="service-content"><div class="service-title">إصدار جواز السفر السعودي</div></div>
+            </div>
+
+            
+            <div class="service-card" onclick="goTo('/estimation')">
+                <div class="service-icon"><i class="fas fa-chart-line"></i></div>
+                <div class="service-content"><div class="service-title">التقدير</div></div>
+            </div>
+
+            <div class="service-card" onclick="goTo('/birth-registration')">
+                <div class="service-icon"><i class="fas fa-baby"></i></div>
+                <div class="service-content"><div class="service-title">تسجيل المواليد</div></div>
+            </div>
+
+            
+            <div class="service-card" onclick="goTo('/driving-license')">
+                <div class="service-icon"><i class="fas fa-car"></i></div>
+                <div class="service-content"><div class="service-title">تجديد رخصة القيادة</div></div>
+            </div>
+
+            <div class="service-card" onclick="goTo('/reports')">
+                <div class="service-icon"><i class="fas fa-file-alt"></i></div>
+                <div class="service-content"><div class="service-title">بلاغي</div></div>
+            </div>
+
+            <div class="service-card" onclick="goTo('/family-record')">
+                <div class="service-icon"><i class="fas fa-users"></i></div>
+                <div class="service-content"><div class="service-title">خدمات سجل الأسرة</div></div>
+            </div>
+
+            <div class="service-card" onclick="goTo('/lost-passport')">
+                <div class="service-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                <div class="service-content"><div class="service-title">الإبلاغ عن فقدان جواز سعودي</div></div>
+            </div>
+        </div>
+
+        
+        <button class="new-report-btn" onclick="goTo('/new-report')">
+            <i class="fas fa-plus"></i>
+        </button>
+
+        
+        <nav class="bottom-nav">
+            <a href="/" class="nav-item active">
+                <i class="fas fa-home"></i>
+                <span>الرئيسية</span>
+            </a>
+            <a href="/reports" class="nav-item">
+                <i class="fas fa-file-alt"></i>
+                <span>بلاغاتي</span>
+            </a>
+            <a href="/family-record" class="nav-item">
+                <i class="fas fa-user-friends"></i>
+                <span>عائلتي</span>
+            </a>
+            <a href="/services" class="nav-item">
+                <i class="fas fa-users"></i>
+                <span>الخدمات</span>
+            </a>
+            <a href="/more" class="nav-item">
+                <i class="fas fa-ellipsis-h"></i>
+                <span>المزيد</span>
+            </a>
+        </nav>
+    </div>
+
+    <script>
+        function goTo(path) {
+            window.location.href = path;
+        }
+    </script>
+</body>
+</html>
