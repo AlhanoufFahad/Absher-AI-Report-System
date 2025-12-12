@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - البلاغات</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+
+    <style>
+        
+        .id-number-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        
+        .id-number-value {
+            font-family: 'Tajawal', sans-serif; 
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            padding: 4px 0;
+            letter-spacing: normal;
+            direction: rtl;
+            text-align: right;
+            background: none;
+            border: none;
+            border-radius: 0;
+        }
+        
+        .report-number {
+            font-weight: 600;
+            color: #0B4F3A;
+            font-size: 14px;
+        }
+        
+        
+        .report-date {
+            font-family: 'Tajawal', sans-serif;
+            font-weight: 500;
+            color: #495057;
+            font-size: 14px;
+        }
+        
+        
+        .report-type {
+            font-weight: 500;
+            padding: 4px 0;
+            display: inline-block;
+            font-size: 14px;
+            color: #333;
+            background: none;
+        }
+        
+        .authority-name {
+            font-weight: 500;
+            padding: 4px 0;
+            font-size: 14px;
+            color: #333;
+            background: none;
+        }
+        
+        
+        .search-section {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            padding: 20px;
+            margin-bottom: 25px;
+            border-top: 3px solid #0B4F3A;
+        }
+        
+        .search-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .search-form {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .search-input-group {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .search-label {
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 8px;
+            display: block;
+            font-size: 14px;
+        }
+        
+        .search-input {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 15px;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #1D794F;
+            box-shadow: 0 0 0 3px rgba(29, 121, 79, 0.1);
+        }
+        
+        .search-options {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+        }
+        
+        .search-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .search-option input[type="radio"] {
+            accent-color: #1D794F;
+        }
+        
+        .search-option label {
+            font-size: 14px;
+            color: #555;
+            cursor: pointer;
+        }
+        
+        .search-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .search-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 6px;
+            font-family: 'Tajawal', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .search-primary {
+            background-color: #1D794F;
+            color: white;
+        }
+        
+        .search-primary:hover {
+            background-color: #28a745;
+        }
+        
+        .search-secondary {
+            background-color: #f8f9fa;
+            color: #555;
+            border: 1px solid #ddd;
+        }
+        
+        .search-secondary:hover {
+            background-color: #e9ecef;
+        }
+        
+        
+        .divider {
+            height: 1px;
+            background-color: #eaeaea;
+            margin: 25px 0;
+            border: none;
+        }
+        
+        
+        @media (max-width: 768px) {
+            .search-form {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .search-input-group {
+                min-width: 100%;
+            }
+            
+            .search-options {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .search-actions {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .search-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        
+        <div class="sidebar">
+            <div class="logo-area">
+                <div class="logo">لوحة التحكم</div>
+            </div>
+            <div class="menu">
+                <a href="Home.html" class="menu-btn">
+                    الرئيسية
+                </a>
+                <a href="reports.html" class="menu-btn active">
+                    البلاغات
+                </a>
+            </div>
+        </div>
+
+        
+        <div class="main-content">
+            
+            <div class="page-content">
+                <header class="page-header">
+                    <h1>البلاغات</h1>
+                    <div style="display: flex; gap: 10px;">                       
+                        <button class="add-report-btn" onclick="addNewReport()">
+                            <i class="fas fa-plus"></i> إضافة بلاغ جديد
+                        </button>
+                    </div>
+                </header>
+
+                
+                <div class="filters-section">
+                    <div class="filters-title">
+                        <i class="fas fa-filter"></i> فلتر البلاغات
+                    </div>
+                    
+                    <div class="filters-grid">
+                        <div class="filter-group">
+                            <label class="filter-label">الجهة المختصة</label>
+                            <select class="filter-select" id="authority-filter">
+                                <option value="">جميع الجهات</option>
+                                <option value="البلدية">البلدية</option>
+                                <option value="المرور">المرور</option>
+                                <option value="الدفاع المدني">الدفاع المدني</option>
+                                <option value="الصحة">الصحة</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label class="filter-label">درجة الخطورة</label>
+                            <select class="filter-select" id="danger-filter">
+                                <option value="">جميع الدرجات</option>
+                                <option value="high">عالية</option>
+                                <option value="medium">متوسطة</option>
+                                <option value="low">منخفضة</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label class="filter-label">حالة البلاغ</label>
+                            <select class="filter-select" id="status-filter">
+                                <option value="">جميع الحالات</option>
+                                <option value="completed">تم التنفيذ</option>
+                                <option value="in-progress">قيد التنفيذ</option>
+                                <option value="cancelled">تم الإلغاء</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label class="filter-label">الفترة الزمنية</label>
+                            <select class="filter-select" id="time-filter">
+                                <option value="">كل الفترات</option>
+                                <option value="today">اليوم</option>
+                                <option value="week">أخر أسبوع</option>
+                                <option value="month">أخر شهر</option>
+                                <option value="quarter">أخر 3 أشهر</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-actions">
+                        <button class="filter-btn reset-btn" onclick="resetFilters()">
+                            <i class="fas fa-redo"></i> إعادة تعيين
+                        </button>
+                        <button class="filter-btn apply-btn" onclick="applyFilters()">
+                            <i class="fas fa-check"></i> تطبيق الفلتر
+                        </button>
+                    </div>
+                </div>
+
+                
+                <hr class="divider">
+
+                
+                <div class="search-section">
+                    <div class="search-title">
+                        <i class="fas fa-search"></i> بحث متقدم
+                    </div>
+                    
+                    <div class="search-form">
+                        <div class="search-input-group">
+                            <label class="search-label">
+                                أبحث برقم الهوية/الإقامة أو برقم البلاغ
+                            </label>
+                            <input 
+                                type="text" 
+                                class="search-input" 
+                                id="search-input" 
+                                placeholder="أدخل رقم الهوية أو رقم البلاغ للبحث..."
+                                onkeypress="handleSearchKeyPress(event)"
+                            >
+                        </div>
+                        
+                        <div class="search-options">
+                            <div class="search-option">
+                                <input 
+                                    type="radio" 
+                                    id="search-by-id" 
+                                    name="search-type" 
+                                    value="id" 
+                                    checked
+                                    onchange="updateSearchPlaceholder()"
+                                >
+                                <label for="search-by-id">بحث برقم الهوية/الإقامة</label>
+                            </div>
+                            
+                            <div class="search-option">
+                                <input 
+                                    type="radio" 
+                                    id="search-by-report" 
+                                    name="search-type" 
+                                    value="report"
+                                    onchange="updateSearchPlaceholder()"
+                                >
+                                <label for="search-by-report">بحث برقم البلاغ</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="search-actions">
+                        <button class="search-btn search-secondary" onclick="clearSearch()">
+                            <i class="fas fa-times"></i> مسح البحث
+                        </button>
+                        <button class="search-btn search-primary" onclick="performSearch()">
+                            <i class="fas fa-search"></i> بحث
+                        </button>
+                    </div>
+                </div>
+
+                
+                <div class="reports-container">
+                    <div class="table-responsive">
+                        <table class="reports-table">
+                            <thead>
+                                <tr>
+                                    <th>رقم البلاغ</th>
+                                    <th>رقم الهوية / الإقامة</th>
+                                    <th>نوع البلاغ</th>
+                                    <th>الجهة المختصة</th>
+                                    <th>درجة الخطورة</th>
+                                    <th>الحالة</th>
+                                    <th>التاريخ</th>
+                                    <th>تفاصيل</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reports-table-body">
+                            
+                            </tbody>
+                        </table>
+                    </div>
+
+                    
+                    <div class="warning-box">
+                        ⚠️ هذه الصفحة مخصصة لأغراض العرض والاختبار فقط للوحة التحكم.
+                    </div>
+                    
+                    
+                    <div class="table-footer">
+                        عرض <span id="current-count">1</span>-<span id="total-count">10</span> من <span id="total-reports-count">1743</span> بلاغ
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        
+        const reportsDatabase = [
+            {
+                id: 'REP-2025-001',
+                nationalId: '1087654321',
+                type: 'حريق',
+                authority: 'البلدية',
+                dangerLevel: 'high',
+                status: 'completed',
+                date: '2025-03-21'
+            },
+            {
+                id: 'REP-2025-002',
+                nationalId: '1098345678',
+                type: 'حادث',
+                authority: 'المرور',
+                dangerLevel: 'high',
+                status: 'in-progress',
+                date: '2025-03-03'
+            },
+            {
+                id: 'REP-2025-003',
+                nationalId: '1109876543',
+                type: 'شكوى',
+                authority: 'المرور',
+                dangerLevel: 'medium',
+                status: 'completed',
+                date: '2025-01-28'
+            },
+            {
+                id: 'REP-2025-004',
+                nationalId: '1112345678',
+                type: 'بلاغ',
+                authority: 'البلدية',
+                dangerLevel: 'low',
+                status: 'cancelled',
+                date: '2025-02-15'
+            },
+            {
+                id: 'REP-2025-005',
+                nationalId: '1123456789',
+                type: 'شكوى',
+                authority: 'البلدية',
+                dangerLevel: 'medium',
+                status: 'in-progress',
+                date: '2025-01-10'
+            },
+            {
+                id: 'REP-2025-006',
+                nationalId: '1134567890',
+                type: 'حريق',
+                authority: 'الدفاع المدني',
+                dangerLevel: 'high',
+                status: 'completed',
+                date: '2025-03-15'
+            },
+            {
+                id: 'REP-2025-007',
+                nationalId: '1145678901',
+                type: 'حادث',
+                authority: 'المرور',
+                dangerLevel: 'medium',
+                status: 'in-progress',
+                date: '2025-03-10'
+            },
+            {
+                id: 'REP-2025-008',
+                nationalId: '1156789012',
+                type: 'شكوى',
+                authority: 'البلدية',
+                dangerLevel: 'low',
+                status: 'completed',
+                date: '2025-02-28'
+            },
+            {
+                id: 'REP-2025-009',
+                nationalId: '1167890123',
+                type: 'بلاغ',
+                authority: 'الصحة',
+                dangerLevel: 'medium',
+                status: 'cancelled',
+                date: '2025-02-20'
+            },
+            {
+                id: 'REP-2025-010',
+                nationalId: '1178901234',
+                type: 'حادث',
+                authority: 'المرور',
+                dangerLevel: 'high',
+                status: 'completed',
+                date: '2025-02-05'
+            }
+        ];
+        
+        let currentSearchResults = [...reportsDatabase];
+        let isSearchActive = false;
+        let currentSearchQuery = '';
+        let currentSearchType = 'id';
+        
+        
+        function updateSearchPlaceholder() {
+            const searchInput = document.getElementById('search-input');
+            const searchType = document.querySelector('input[name="search-type"]:checked').value;
+            currentSearchType = searchType;
+            
+            if (searchType === 'id') {
+                searchInput.placeholder = "أدخل رقم الهوية أو الإقامة للبحث... (مثال: 1087654321)";
+            } else {
+                searchInput.placeholder = "أدخل رقم البلاغ للبحث... (مثال: REP-2025-001)";
+            }
+        }
+        
+        function handleSearchKeyPress(event) {
+            if (event.key === 'Enter') {
+                performSearch();
+            }
+        }
+        
+        
+        function performSearch() {
+            const searchInput = document.getElementById('search-input');
+            const query = searchInput.value.trim();
+            const searchType = document.querySelector('input[name="search-type"]:checked').value;
+            
+            if (!query) {
+                
+                searchInput.focus();
+                return;
+            }
+            
+            
+            const searchBtn = document.querySelector('.search-primary');
+            const originalText = searchBtn.innerHTML;
+            searchBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري البحث...';
+            searchBtn.disabled = true;
+            
+            setTimeout(() => {
+                
+                let results = [];
+                
+                if (searchType === 'id') {
+                    
+                    results = reportsDatabase.filter(report => 
+                        report.nationalId.includes(query)
+                    );
+                } else {
+                
+                    results = reportsDatabase.filter(report => 
+                        report.id.toLowerCase().includes(query.toLowerCase())
+                    );
+                }
+                
+                
+                currentSearchResults = results;
+                isSearchActive = true;
+                currentSearchQuery = query;
+                currentSearchType = searchType;
+                
+                
+                renderReportsTable(results);
+                
+                
+                if (results.length > 0) {
+                    showSearchResultsMessage(results.length, query, searchType);
+                } else {
+                    showNoResultsMessage(query, searchType);
+                }
+                
+                
+                searchBtn.innerHTML = originalText;
+                searchBtn.disabled = false;
+                
+                
+                highlightSearchResults();
+                
+            }, 800);
+        }
+        
+        
+        function showSearchResultsMessage(count, query, type) {
+            const message = type === 'id' 
+                ? `تم العثور على ${count} بلاغ برقم الهوية/الإقامة: ${query}`
+                : `تم العثور على ${count} بلاغ برقم البلاغ: ${query}`;
+            
+            
+            const reportsContainer = document.querySelector('.reports-container');
+            let resultsMessage = document.getElementById('search-results-message');
+            
+            if (!resultsMessage) {
+                resultsMessage = document.createElement('div');
+                resultsMessage.id = 'search-results-message';
+                resultsMessage.style.cssText = `
+                    background-color: #e8f5e9;
+                    color: #155724;
+                    padding: 12px 20px;
+                    border-radius: 6px;
+                    margin-bottom: 15px;
+                    border-right: 4px solid #28a745;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                `;
+                reportsContainer.insertBefore(resultsMessage, reportsContainer.firstChild);
+            }
+            
+            resultsMessage.innerHTML = `
+                <div>
+                    <i class="fas fa-check-circle"></i> ${message}
+                </div>
+                <button onclick="clearSearch()" style="
+                    background: none;
+                    border: 1px solid #28a745;
+                    color: #28a745;
+                    padding: 5px 10px;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    font-family: 'Tajawal';
+                    font-size: 14px;
+                ">
+                    <i class="fas fa-times"></i> مسح البحث
+                </button>
+            `;
+        }
+        
+        
+        function showNoResultsMessage(query, type) {
+            const message = type === 'id'
+                ? `لا توجد بلاغات برقم الهوية/الإقامة: ${query}`
+                : `لا توجد بلاغات برقم البلاغ: ${query}`;
+            
+            
+            const reportsContainer = document.querySelector('.reports-container');
+            let noResultsMessage = document.getElementById('search-results-message');
+            
+            if (!noResultsMessage) {
+                noResultsMessage = document.createElement('div');
+                noResultsMessage.id = 'search-results-message';
+                noResultsMessage.style.cssText = `
+                    background-color: #fff3cd;
+                    color: #856404;
+                    padding: 12px 20px;
+                    border-radius: 6px;
+                    margin-bottom: 15px;
+                    border-right: 4px solid #ffc107;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                `;
+                reportsContainer.insertBefore(noResultsMessage, reportsContainer.firstChild);
+            }
+            
+            noResultsMessage.innerHTML = `
+                <div>
+                    <i class="fas fa-exclamation-triangle"></i> ${message}
+                </div>
+                <button onclick="clearSearch()" style="
+                    background: none;
+                    border: 1px solid #ffc107;
+                    color: #856404;
+                    padding: 5px 10px;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    font-family: 'Tajawal';
+                    font-size: 14px;
+                ">
+                    <i class="fas fa-times"></i> إعادة الكل
+                </button>
+            `;
+        }
+        
+        
+        function highlightSearchResults() {
+            const rows = document.querySelectorAll('#reports-table-body tr');
+            rows.forEach(row => {
+                row.style.backgroundColor = '';
+                row.style.transition = 'background-color 0.5s ease';
+            });
+            
+            setTimeout(() => {
+                rows.forEach(row => {
+                    row.style.backgroundColor = '#f8fff9';
+                });
+            }, 100);
+        }
+        
+        
+        function clearSearch() {
+            const searchInput = document.getElementById('search-input');
+            searchInput.value = '';
+            
+            
+            const resultsMessage = document.getElementById('search-results-message');
+            if (resultsMessage) {
+                resultsMessage.remove();
+            }
+            
+            
+            isSearchActive = false;
+            currentSearchQuery = '';
+            renderReportsTable(reportsDatabase);
+            
+            
+            const clearBtn = document.querySelector('.search-secondary');
+            clearBtn.innerHTML = '<i class="fas fa-check"></i> تم المسح';
+            clearBtn.style.backgroundColor = '#28A745';
+            clearBtn.style.color = 'white';
+            
+            setTimeout(() => {
+                clearBtn.innerHTML = '<i class="fas fa-times"></i> مسح البحث';
+                clearBtn.style.backgroundColor = '#f8f9fa';
+                clearBtn.style.color = '#555';
+            }, 1500);
+        }
+        
+        function renderReportsTable(data = null) {
+            const tableBody = document.getElementById('reports-table-body');
+            const dataToRender = data || (isSearchActive ? currentSearchResults : reportsDatabase);
+            
+            tableBody.innerHTML = '';
+            
+            dataToRender.forEach(report => {
+                const row = document.createElement('tr');
+                
+                
+                let statusText, statusClass;
+                switch(report.status) {
+                    case 'completed':
+                        statusText = 'تم التنفيذ';
+                        statusClass = 'status-completed';
+                        break;
+                    case 'in-progress':
+                        statusText = 'قيد التنفيذ';
+                        statusClass = 'status-in-progress';
+                        break;
+                    case 'cancelled':
+                        statusText = 'تم الإلغاء';
+                        statusClass = 'status-cancelled';
+                        break;
+                }
+                
+                
+                let dangerText, dangerClass;
+                switch(report.dangerLevel) {
+                    case 'high':
+                        dangerText = 'عالية';
+                        dangerClass = 'danger-high';
+                        break;
+                    case 'medium':
+                        dangerText = 'متوسطة';
+                        dangerClass = 'danger-medium';
+                        break;
+                    case 'low':
+                        dangerText = 'منخفضة';
+                        dangerClass = 'danger-low';
+                        break;
+                }
+                
+                row.innerHTML = `
+                    <td>
+                        <span class="report-number">${report.id}</span>
+                    </td>
+                    <td>
+                        <div class="id-number-container">
+                            <div class="id-number-value">
+                                ${report.nationalId}
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="report-type">
+                            ${report.type}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="authority-name">
+                            ${report.authority}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="danger-badge ${dangerClass}">${dangerText}</span>
+                    </td>
+                    <td>
+                        <span class="status-badge ${statusClass}">${statusText}</span>
+                    </td>
+                    <td>
+                        <span class="report-date">${report.date}</span>
+                    </td>
+                    <td>
+                        <button class="details-btn">
+                            <i class="fas fa-eye"></i> عرض التفاصيل
+                        </button>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+            
+            
+            const totalCount = dataToRender.length;
+            document.getElementById('current-count').textContent = totalCount > 0 ? '1' : '0';
+            document.getElementById('total-count').textContent = totalCount > 10 ? '10' : totalCount;
+            document.getElementById('total-reports-count').textContent = '1743'; // الإجمالي ثابت 1743
+        }
+        
+        function applyFilters() {
+            const authority = document.getElementById('authority-filter').value;
+            const danger = document.getElementById('danger-filter').value;
+            const status = document.getElementById('status-filter').value;
+            const time = document.getElementById('time-filter').value;
+            
+            
+            const container = document.querySelector('.reports-container');
+            const applyBtn = document.querySelector('.apply-btn');
+            
+            container.classList.add('loading');
+            applyBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التطبيق...';
+            
+            setTimeout(() => {
+                container.classList.remove('loading');
+                applyBtn.innerHTML = '<i class="fas fa-check"></i> تطبيق الفلتر';
+                
+                
+                
+            }, 800);
+        }
+        
+        
+        function resetFilters() {
+            document.getElementById('authority-filter').value = '';
+            document.getElementById('danger-filter').value = '';
+            document.getElementById('status-filter').value = '';
+            document.getElementById('time-filter').value = '';
+            
+        
+            const resetBtn = document.querySelector('.reset-btn');
+            resetBtn.innerHTML = '<i class="fas fa-check"></i> تم التعيين';
+            resetBtn.style.backgroundColor = '#28A745';
+            resetBtn.style.color = 'white';
+            
+            setTimeout(() => {
+                resetBtn.innerHTML = '<i class="fas fa-redo"></i> إعادة تعيين';
+                resetBtn.style.backgroundColor = '#f8f9fa';
+                resetBtn.style.color = '#555';
+            }, 1500);
+        }
+        
+        function viewReportDetails(reportId) {
+            
+            return false;
+        }
+        
+        
+        function addNewReport() {
+            
+            return false;
+        }
+        
+    
+        document.addEventListener('DOMContentLoaded', function() {
+            renderReportsTable();
+            updateSearchPlaceholder();
+        });
+    </script>
+</body>
+</html>
